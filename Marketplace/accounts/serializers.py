@@ -16,11 +16,25 @@ class RegistrationRequest(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if len(attrs['password']) < 10:
-            raise serializers.ValidationError("Password need to be 10 characters long.")
+            raise serializers.ValidationError(
+                "Password need to be 10 characters long.")
+        return attrs
 
 
 class RegistrationResponse(serializers.Serializer):
     message = serializers.CharField()
     user = serializers.CharField()
+    access_token = serializers.CharField()
+    refresh_token = serializers.CharField()
+
+
+class LoginRequest(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+
+class LoginResponse(serializers.Serializer):
     access_token = serializers.CharField()
     refresh_token = serializers.CharField()

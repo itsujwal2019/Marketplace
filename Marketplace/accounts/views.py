@@ -1,9 +1,12 @@
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from Marketplace.accounts.serializers import RegistrationRequest, RegistrationResponse
+from rest_framework import status
+from Marketplace.accounts.serializers import RegistrationRequest, RegistrationResponse, LoginRequest, LoginResponse
 
 
 @swagger_auto_schema(method='POST',
@@ -11,7 +14,8 @@ from Marketplace.accounts.serializers import RegistrationRequest, RegistrationRe
                      responses={
                          200: openapi.Response('Registration successful', RegistrationResponse),
                          400: 'Bad Request'
-                     })
+                     },
+                     tags=['User'])
 @api_view(['POST'])
 def registration_view(request):
     serializer = RegistrationRequest(data=request.data)
@@ -25,3 +29,28 @@ def registration_view(request):
                          'access_token': access_token,
                          'refresh_token': refresh_token})
     return Response(serializer.errors, status=400)
+
+
+@swagger_auto_schema(method='POST',
+                     request_body=LoginRequest,
+                     responses={
+                         200: openapi.Response('Login successful', LoginResponse),
+                         400: 'Bad Request'
+                     },
+                     tags=['User'])
+@api_view(['POST'])
+def login_view(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    user = authenticate(username=username, password=password)
+
+    if user:
+        refresh = RefreshToken.for_user(request.user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+        return Response({
+                         'access_token': access_token,
+                         'refresh_token': refresh_token})
+    
+    return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
