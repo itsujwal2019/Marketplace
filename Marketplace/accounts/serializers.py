@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-# from Marketplace.accounts.models import UserProfile
 
 
 class RegistrationRequest(serializers.ModelSerializer):

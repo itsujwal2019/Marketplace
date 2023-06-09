@@ -1,14 +1,17 @@
-from Marketplace.accounts.serializers import RegistrationRequest, RegistrationResponse
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework_simplejwt.tokens import RefreshToken
-from drf_yasg import openapi
+from Marketplace.accounts.serializers import RegistrationRequest, RegistrationResponse
 
-@swagger_auto_schema(method='POST', request_body=RegistrationRequest, responses={
-    200: openapi.Response('Registration successful', RegistrationResponse),
-    400: 'Bad Request'
-})
+
+@swagger_auto_schema(method='POST',
+                     request_body=RegistrationRequest,
+                     responses={
+                         200: openapi.Response('Registration successful', RegistrationResponse),
+                         400: 'Bad Request'
+                     })
 @api_view(['POST'])
 def registration_view(request):
     serializer = RegistrationRequest(data=request.data)
