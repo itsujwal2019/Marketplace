@@ -20,6 +20,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'Marketplace.accounts',
     'drf_yasg',
     'rest_framework_swagger',
     'rest_framework',
@@ -68,6 +69,9 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',)
 }
+
+AUTH_USER_MODEL = 'accounts.UserProfile'
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
@@ -103,6 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+# AUTH_USER_MODEL = 'accounts.UserProfile'
 
 SWAGGER_SETTINGS = {
     'SHOW_REQUEST_HEADERS': True,
