@@ -1,5 +1,8 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class RegistrationRequest(serializers.ModelSerializer):
@@ -29,9 +32,10 @@ class RegistrationResponse(serializers.Serializer):
 
 
 class LoginRequest(serializers.ModelSerializer):
+    type = serializers.CharField()
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ['username', 'password', 'type']
         extra_kwargs = {'password': {'write_only': True}}
 
 
