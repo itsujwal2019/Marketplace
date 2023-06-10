@@ -41,8 +41,6 @@ def registration_view(request):
                      },
                      tags=['User']
                      )
-
-
 @api_view(['POST'])
 def login_view(request):
     username = request.data.get('username')
@@ -59,6 +57,7 @@ def login_view(request):
 
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
@@ -68,5 +67,18 @@ def get_user_profile(request):
         'id': user.id,
         'username': user.username,
         'email': user.email,
+        'is_active':user.is_active
     }
     return Response(profile_data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def delete_user_profile(request):
+    user_id = request.user.id
+    try:
+        user = User.objects.get(id=user_id)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
