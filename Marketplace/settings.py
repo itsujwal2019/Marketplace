@@ -113,7 +113,15 @@ SWAGGER_SETTINGS = {
     'SUPPORTED_SUBMIT_METHODS': [
         'get',
         'post',
-    ]
+    ],
+    'SECURITY_DEFINITIONS': {
+      
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
 }
 
 REST_FRAMEWORK

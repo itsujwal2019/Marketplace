@@ -1,4 +1,3 @@
-# from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
