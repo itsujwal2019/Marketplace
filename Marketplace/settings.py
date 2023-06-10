@@ -20,10 +20,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'Marketplace.accounts',
     'drf_yasg',
     'rest_framework_swagger',
     'rest_framework',
+    'Marketplace.accounts',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -106,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-# AUTH_USER_MODEL = 'accounts.UserProfile'
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 SWAGGER_SETTINGS = {
     'SHOW_REQUEST_HEADERS': True,

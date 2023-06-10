@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -9,6 +9,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from Marketplace.accounts.serializers import RegistrationRequest, RegistrationResponse, LoginRequest, LoginResponse
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 @swagger_auto_schema(method='POST',
@@ -58,6 +61,9 @@ def login_view(request):
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
+@swagger_auto_schema(method='GET',
+                     tags=['Profile']
+                     )
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
@@ -67,10 +73,15 @@ def get_user_profile(request):
         'id': user.id,
         'username': user.username,
         'email': user.email,
-        'is_active':user.is_active
+        'is_active': user.is_active,
+        'bio': user.bio
     }
     return Response(profile_data)
 
+
+@swagger_auto_schema(method='DELETE',
+                     tags=['Profile']
+                     )
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
