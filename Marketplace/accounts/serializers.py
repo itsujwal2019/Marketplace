@@ -17,9 +17,9 @@ class RegistrationRequest(serializers.ModelSerializer):
         return user
 
     def validate(self, attrs):
-        if len(attrs['password']) < 10:
+        if len(attrs['password']) < 6:
             raise serializers.ValidationError(
-                "Password need to be 10 characters long.")
+                "Password need to be 6 characters long.")
         return attrs
 
 
