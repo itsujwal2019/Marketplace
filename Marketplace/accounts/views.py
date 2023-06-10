@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
-from Marketplace.accounts.serializers import RegistrationRequest, RegistrationResponse, LoginRequest, LoginResponse
+from Marketplace.accounts.serializers import RegistrationRequest, RegistrationResponse, LoginRequest, LoginResponse, ChangePasswordRequest, UserSerializer
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -62,6 +62,9 @@ def login_view(request):
 
 
 @swagger_auto_schema(method='GET',
+                     responses={
+                         200:  UserSerializer
+                     },
                      tags=['Profile']
                      )
 @api_view(['GET'])
@@ -72,9 +75,6 @@ def get_user_profile(request):
     profile_data = {
         'id': user.id,
         'username': user.username,
-        'email': user.email,
-        'is_staff': user.is_staff,
-        'bio': user.bio,
         'type': user.user_type
     }
     return Response(profile_data)
@@ -96,6 +96,13 @@ def delete_user_profile(request):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
+@swagger_auto_schema(method='PUT',
+                     request_body=ChangePasswordRequest,
+                     responses={
+                         204: openapi.Response(description="No Content")
+                     },
+                     tags=['User']
+                     )
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])

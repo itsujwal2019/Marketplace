@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
 class RegistrationRequest(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -41,3 +40,13 @@ class LoginRequest(serializers.ModelSerializer):
 class LoginResponse(serializers.Serializer):
     access_token = serializers.CharField()
     refresh_token = serializers.CharField()
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'user_type' ]
+
+
+class ChangePasswordRequest(serializers.Serializer):
+    old_password = serializers.CharField()
+    new_password = serializers.CharField()
