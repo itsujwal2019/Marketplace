@@ -54,7 +54,7 @@ def login_view(request):
             'access_token': access_token,
             'refresh_token': refresh_token})
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-    
+
 
 @swagger_auto_schema(method='GET',
                      responses={
