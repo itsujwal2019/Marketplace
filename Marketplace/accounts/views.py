@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -9,6 +9,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from Marketplace.accounts.serializers import RegistrationRequest, RegistrationResponse, LoginRequest, LoginResponse
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 @swagger_auto_schema(method='POST',
@@ -45,9 +48,10 @@ def registration_view(request):
 def login_view(request):
     username = request.data.get('username')
     password = request.data.get('password')
+    user_type = request.data.get('type')
     user = authenticate(username=username, password=password)
 
-    if user is not None:
+    if user is not None and user.user_type == user_type:
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
@@ -58,6 +62,9 @@ def login_view(request):
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
+@swagger_auto_schema(method='GET',
+                     tags=['Profile']
+                     )
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
@@ -67,10 +74,16 @@ def get_user_profile(request):
         'id': user.id,
         'username': user.username,
         'email': user.email,
-        'is_active':user.is_active
+        'is_staff': user.is_staff,
+        'bio': user.bio,
+        'type': user.user_type
     }
     return Response(profile_data)
 
+
+@swagger_auto_schema(method='DELETE',
+                     tags=['Profile']
+                     )
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
