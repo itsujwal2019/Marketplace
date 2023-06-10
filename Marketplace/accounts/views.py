@@ -102,11 +102,10 @@ def delete_user_profile(request):
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
 def change_password(request):
-    serializer = ChangePasswordRequest(data=request.data)
+    serializer = ChangePasswordRequest(request.user, data=request.data)
 
     if serializer.is_valid():
-        user = request.user
-        serializer.update(user, serializer.validated_data)
+        serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
     return Response({'error': 'You have no right to perform this action.'}, status=status.HTTP_400_BAD_REQUEST)
 

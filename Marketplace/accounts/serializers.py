@@ -76,3 +76,7 @@ class ChangePasswordRequest(serializers.Serializer):
             return user
         else:
             return serializers.ValidationError("Your current password is invalid.")
+        
+    def create(self, validated_data):
+        raise NotImplementedError("Creating a new instance is not supported.")
+
