@@ -7,6 +7,11 @@ from django.utils.translation import gettext_lazy as _
 
 class CustomUser(AbstractUser):
     bio = models.CharField(max_length=150)
+    user_type = models.CharField(max_length=20, choices=[
+        ('admin', 'Admin'),
+        ('user', 'User'),
+        ('moderator', 'Moderator'),
+    ], default='user')
 
     REQUIRED_FIELDS = []
     objects = UserManager()

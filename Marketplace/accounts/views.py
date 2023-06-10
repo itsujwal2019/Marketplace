@@ -48,9 +48,10 @@ def registration_view(request):
 def login_view(request):
     username = request.data.get('username')
     password = request.data.get('password')
+    user_type = request.data.get('type')
     user = authenticate(username=username, password=password)
 
-    if user is not None:
+    if user is not None and user.user_type == user_type:
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
@@ -73,8 +74,9 @@ def get_user_profile(request):
         'id': user.id,
         'username': user.username,
         'email': user.email,
-        'is_active': user.is_active,
-        'bio': user.bio
+        'is_staff': user.is_staff,
+        'bio': user.bio,
+        'type': user.user_type
     }
     return Response(profile_data)
 

@@ -32,9 +32,10 @@ class RegistrationResponse(serializers.Serializer):
 
 
 class LoginRequest(serializers.ModelSerializer):
+    type = serializers.CharField()
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ['username', 'password', 'type']
         extra_kwargs = {'password': {'write_only': True}}
 
 
