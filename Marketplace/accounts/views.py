@@ -102,17 +102,11 @@ def delete_user_profile(request):
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
 def change_password(request):
-    user_id = request.user.id
-    try:
-        user = User.objects.get(id=user_id)
-        old_password = request.data.get("old_password")
-        new_password = request.data.get("new_password")
-        check_password = user.check_password(old_password)
-        if check_password:
-            user.set_password(new_password)
-            user.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({'error': 'Old password did not match'}, status=status.HTTP_401_UNAUTHORIZED)
-    except User.DoesNotExist:
-        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    serializer = ChangePasswordRequest(data=request.data)
+
+    if serializer.is_valid():
+        user = request.user
+        serializer.update(user, serializer.validated_data)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response({'error': 'You have no right to perform this action.'}, status=status.HTTP_400_BAD_REQUEST)
+
