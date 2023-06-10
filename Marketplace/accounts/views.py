@@ -2,8 +2,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from Marketplace.accounts.serializers import RegistrationRequest, RegistrationResponse, LoginRequest, LoginResponse
@@ -37,20 +39,34 @@ def registration_view(request):
                          200: openapi.Response('Login successful', LoginResponse),
                          400: 'Bad Request'
                      },
-                     tags=['User'])
+                     tags=['User']
+                     )
+
+
 @api_view(['POST'])
 def login_view(request):
     username = request.data.get('username')
     password = request.data.get('password')
-
     user = authenticate(username=username, password=password)
 
-    if user:
-        refresh = RefreshToken.for_user(request.user)
+    if user is not None:
+        refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
         return Response({
-                         'access_token': access_token,
-                         'refresh_token': refresh_token})
-    
+            'access_token': access_token,
+            'refresh_token': refresh_token})
+
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def get_user_profile(request):
+    user = request.user
+    profile_data = {
+        'id': user.id,
+        'username': user.username,
+        'email': user.email,
+    }
+    return Response(profile_data)
