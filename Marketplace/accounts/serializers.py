@@ -68,7 +68,6 @@ class ChangePasswordRequest(serializers.Serializer):
         current_password = validated_data.get("current_password")
         new_password = validated_data.get("new_password")
         user = User.objects.get(id=instance.id) 
-        print("working boss")
         check_password = user.check_password(current_password)
 
         if check_password:
@@ -77,5 +76,3 @@ class ChangePasswordRequest(serializers.Serializer):
             return user
         else:
             return serializers.ValidationError("Your current password is invalid.")
-
-
