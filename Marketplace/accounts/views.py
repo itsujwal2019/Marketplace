@@ -1,4 +1,3 @@
-from django.contrib.auth import authenticate
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -45,21 +44,17 @@ def registration_view(request):
                      )
 @api_view(['POST'])
 def login_view(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
-    user_type = request.data.get('type')
-    user = authenticate(username=username, password=password)
-
-    if user is not None and user.user_type == user_type:
-        refresh = RefreshToken.for_user(user)
+    serializer = LoginRequest(data=request.data)
+    if serializer.is_valid():
+        validated_data = serializer.validated_data
+        refresh = RefreshToken.for_user(validated_data)
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
         return Response({
             'access_token': access_token,
             'refresh_token': refresh_token})
-
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
+    
 
 @swagger_auto_schema(method='GET',
                      responses={
