@@ -24,5 +24,7 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('account/',include(('Marketplace.accounts.urls','accounts'), namespace='accounts') ),
-    path('post/',include(('posts.urls','posts'), namespace='posts') )
+    path('post/',include(('posts.urls','posts'), namespace='posts') ),
+    path('user_profile/',include(('user_profile.urls','user_profile'), namespace='user_profile') ),
+    path('user_settings/',include(('user_settings.urls','user_settings'), namespace='user_settings') )
 ]
