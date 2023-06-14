@@ -13,6 +13,8 @@ class CustomUser(AbstractUser):
         ('moderator', 'Moderator'),
     ], default='user')
     blocked_by = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='blocked_users')
+    followers = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='following')
+
 
 
     REQUIRED_FIELDS = []
