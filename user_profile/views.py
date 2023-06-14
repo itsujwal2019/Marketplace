@@ -35,3 +35,29 @@ def block_unblock_user(request, user_id):
 
     except User.DoesNotExist:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@swagger_auto_schema(method='POST',
+                     tags=['Profile']
+                     )
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def follow_unfollow_user(request, user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+        user_to_modify = request.user  
+
+        if user == user_to_modify:
+            # same user 
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        if user_to_modify in user.following.all():
+            user.following.remove(user_to_modify)
+        else:
+            user.following.add(user_to_modify)
+
+        user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
