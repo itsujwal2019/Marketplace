@@ -12,6 +12,8 @@ class CustomUser(AbstractUser):
         ('user', 'User'),
         ('moderator', 'Moderator'),
     ], default='user')
+    blocked_by = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='blocked_users')
+
 
     REQUIRED_FIELDS = []
     objects = UserManager()
